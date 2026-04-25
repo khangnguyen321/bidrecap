@@ -1,0 +1,2188 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bid Recap</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --ink: #0f172a;
+        --ink-soft: #334155;
+        --surface: #f0f4f8;
+        --surface-alt: #e2e8f0;
+        --card: #ffffff;
+        --border: #c8d2de;
+        --border-soft: #d5e0ea;
+
+        --accent: #0284c7;
+        --accent-mid: #0ea5e9;
+        --accent-light: #e0f2fe;
+        --accent-glow: rgba(14, 165, 233, 0.18);
+
+        --gold: #b45309;
+        --gold-mid: #d97706;
+        --gold-bright: #f59e0b;
+        --gold-bg: #fffbeb;
+        --gold-glow: rgba(217, 119, 6, 0.18);
+
+        --silver: #475569;
+        --silver-bg: #f1f5f9;
+        --silver-glow: rgba(71, 85, 105, 0.14);
+
+        --bronze: #7c2d12;
+        --bronze-mid: #9a3412;
+        --bronze-bg: #fff7ed;
+        --bronze-glow: rgba(124, 45, 18, 0.14);
+
+        --green: #065f46;
+        --green-mid: #059669;
+        --green-bg: #ecfdf5;
+        --red: #991b1b;
+        --red-mid: #dc2626;
+        --red-bg: #fef2f2;
+        --orange: #9a3412;
+        --orange-bg: #fff7ed;
+        --blue: #1e40af;
+        --blue-bg: #eff6ff;
+
+        --radius: 10px;
+        --radius-sm: 6px;
+        --radius-xs: 4px;
+
+        --shadow-sm:
+          0 1px 3px rgba(15, 23, 42, 0.07), 0 1px 2px rgba(15, 23, 42, 0.04);
+        --shadow-md:
+          0 4px 16px rgba(15, 23, 42, 0.09), 0 2px 6px rgba(15, 23, 42, 0.05);
+        --shadow-lg:
+          0 12px 48px rgba(15, 23, 42, 0.13), 0 4px 16px rgba(15, 23, 42, 0.07);
+      }
+
+      /* ── BASE ── */
+      body {
+        font-family: "DM Sans", sans-serif;
+        background:
+          radial-gradient(
+            ellipse at 10% 15%,
+            rgba(14, 165, 233, 0.1) 0%,
+            transparent 45%
+          ),
+          radial-gradient(
+            ellipse at 90% 85%,
+            rgba(6, 182, 212, 0.09) 0%,
+            transparent 45%
+          ),
+          radial-gradient(
+            ellipse at 55% 50%,
+            rgba(99, 102, 241, 0.06) 0%,
+            transparent 55%
+          ),
+          radial-gradient(
+            ellipse at 80% 10%,
+            rgba(59, 130, 246, 0.07) 0%,
+            transparent 40%
+          ),
+          #eaf0f8;
+        color: var(--ink);
+        line-height: 1.55;
+        min-height: 100vh;
+      }
+
+      /* ── HEADER ── */
+      .app-header {
+        background: linear-gradient(
+          135deg,
+          #0a1628 0%,
+          #102040 60%,
+          #0c1a35 100%
+        );
+        color: #ffffff;
+        padding: 26px 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 16px rgba(0, 0, 0, 0.4);
+        overflow: hidden;
+        border-bottom: 4px solid transparent;
+        border-image: linear-gradient(
+            90deg,
+            #0ea5e9 0%,
+            #6366f1 35%,
+            #06b6d4 65%,
+            #3b82f6 100%
+          )
+          1;
+      }
+      .header-content {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        position: relative;
+        z-index: 1;
+      }
+      .app-header h1 {
+        font-family: "DM Sans", sans-serif;
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: 0.1px;
+        color: #ffffff;
+        text-shadow: 0 0 24px rgba(14, 165, 233, 0.55);
+      }
+      .app-header .subtitle {
+        font-family: "DM Sans", sans-serif;
+        font-size: 11px;
+        margin-top: 3px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: #7dd3fc;
+      }
+      .header-actions {
+        display: flex;
+        gap: 10px;
+        position: relative;
+        z-index: 1;
+      }
+      .header-logo {
+        height: 64px;
+        width: auto;
+        display: block;
+        flex-shrink: 0;
+        mix-blend-mode: multiply;
+      }
+
+      /* ── BUTTONS ── */
+      .btn {
+        font-family: "DM Sans", sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 9px 18px;
+        border-radius: var(--radius-sm);
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        letter-spacing: 0.1px;
+      }
+      .btn-primary {
+        background: linear-gradient(135deg, #0ea5e9, #0284c7);
+        color: #ffffff;
+        box-shadow: 0 2px 10px rgba(14, 165, 233, 0.4);
+      }
+      .btn-primary:hover {
+        background: linear-gradient(135deg, #0284c7, #0369a1);
+      }
+      .btn-danger {
+        background: rgba(190, 18, 60, 0.85);
+        color: #ffffff;
+        border: 1px solid rgba(255, 100, 130, 0.3);
+        backdrop-filter: blur(4px);
+        box-shadow: 0 2px 10px rgba(190, 18, 60, 0.4);
+      }
+      .btn-danger:hover {
+        background: #be123c;
+        color: #fff;
+      }
+      .btn-accent {
+        background: linear-gradient(135deg, #0284c7, #0369a1);
+        color: #fff;
+        box-shadow: 0 2px 12px rgba(2, 132, 199, 0.5);
+      }
+      .btn-accent:hover {
+        background: linear-gradient(135deg, #0369a1, #075985);
+      }
+      .btn-outline {
+        background: var(--accent);
+        color: #fff;
+        border: 1.5px solid var(--border);
+      }
+      .btn-outline:hover {
+        border-color: var(--accent);
+        background: var(--accent-light);
+      }
+      .btn-sm {
+        padding: 6px 13px;
+        font-size: 12px;
+      }
+      .btn-icon {
+        width: 30px;
+        height: 30px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        background: var(--card);
+        cursor: pointer;
+        font-size: 16px;
+        color: var(--ink-muted);
+      }
+      .btn-icon:hover {
+        background: var(--red-bg);
+        border-color: var(--red-mid);
+        color: var(--red);
+      }
+
+      /* ── LAYOUT ── */
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 32px 24px 80px;
+      }
+
+      /* ── SECTIONS ── */
+      .section {
+        background: var(--card);
+        border: 1px solid var(--border-soft);
+        margin-bottom: 20px;
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+      }
+      .section::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 5px;
+        background: linear-gradient(180deg, var(--accent), var(--accent-mid));
+      }
+      .section:hover {
+        box-shadow: var(--shadow-md);
+      }
+      .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        background: linear-gradient(135deg, #1e293b 0%, #2d3748 100%);
+      }
+      .section-header h2 {
+        font-size: 16px;
+        font-weight: 700;
+        color: #f1f5f9;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        letter-spacing: -0.2px;
+      }
+      .section-num {
+        background: #ffffff;
+        color: #0f172a;
+        width: 26px;
+        height: 26px;
+        border-radius: var(--radius-xs);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 800;
+        flex-shrink: 0;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      }
+      .section-body {
+        padding: 24px;
+      }
+
+      /* ── PER-SECTION COLORS ── */
+      /* Section 2 — Indigo */
+      .container > .section:nth-child(2)::before {
+        background: linear-gradient(180deg, #4338ca, #6366f1);
+      }
+
+      /* Section 3 — Cyan */
+      .container > .section:nth-child(3)::before {
+        background: linear-gradient(180deg, #0891b2, #06b6d4);
+      }
+
+      /* Section 4 — Violet */
+      .container > .section:nth-child(4)::before {
+        background: linear-gradient(180deg, #6d28d9, #7c3aed);
+      }
+
+      /* Section 5 — Royal Blue */
+      .container > .section:nth-child(5)::before {
+        background: linear-gradient(180deg, #1d4ed8, #3b82f6);
+      }
+
+      /* ── FORMS ── */
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .form-grid .full-width {
+        grid-column: 1 / -1;
+      }
+      .form-row {
+        display: flex;
+        gap: 16px;
+        width: 100%;
+      }
+      .form-row .w-50 {
+        flex: 0 0 calc(50% - 8px);
+      }
+      .form-row .w-30 {
+        flex: 0 0 calc(30% - 8px);
+      }
+      .form-row .w-20 {
+        flex: 0 0 calc(20% - 8px);
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .form-group label {
+        font-size: 11px;
+        font-weight: 700;
+        color: #0369a1;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+      }
+      .form-group label .req {
+        color: var(--red-mid);
+      }
+
+      input,
+      select,
+      textarea {
+        font-family: "DM Sans", sans-serif;
+        font-size: 14px;
+        padding: 10px 13px;
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: var(--card);
+        color: var(--ink);
+        outline: none;
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: var(--accent-mid);
+        box-shadow: 0 0 0 3px var(--accent-glow);
+      }
+      input.error,
+      select.error,
+      textarea.error {
+        border-color: var(--red-mid);
+        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+      }
+      textarea {
+        resize: vertical;
+        min-height: 50px;
+        line-height: 1.6;
+      }
+      .error-msg {
+        font-size: 11px;
+        color: var(--red);
+        display: none;
+        margin-top: 2px;
+        font-weight: 500;
+      }
+      .error-msg.visible {
+        display: block;
+      }
+
+      /* ── BID TABLE ── */
+      .table-wrap {
+        overflow-x: auto;
+        margin: 0 -24px;
+        padding: 0;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+        table-layout: fixed;
+      }
+      thead th {
+        background: linear-gradient(180deg, #2d3748 0%, #1a202c 100%);
+        padding: 11px 13px;
+        text-align: left;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        color: #e2e8f0;
+        border-bottom: 2px solid #0ea5e9;
+        white-space: nowrap;
+        position: sticky;
+        top: 0;
+      }
+      thead th:first-child {
+        padding-left: 12px;
+      }
+      thead th:last-child {
+        padding-right: 8px;
+      }
+      tbody td {
+        padding: 10px 8px;
+        border-bottom: 1px solid var(--border-soft);
+        vertical-align: top;
+      }
+      tbody td:first-child {
+        padding-left: 12px;
+      }
+      tbody td:last-child {
+        padding-right: 8px;
+      }
+      tbody tr:nth-child(even) {
+        background: #f7fffe;
+      }
+      tbody tr:hover {
+        background: rgba(14, 165, 233, 0.06) !important;
+      }
+      tbody tr.highlight-lowest td {
+        background: var(--green-bg) !important;
+      }
+      tbody tr.highlight-highest td {
+        background: var(--red-bg) !important;
+      }
+
+      table input,
+      table select {
+        width: 100%;
+        padding: 6px 6px;
+        font-size: 12px;
+        min-width: 0;
+        border-radius: var(--radius-xs);
+        box-sizing: border-box;
+      }
+      table input[type="number"] {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+      }
+      table input.base-bid-input {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        text-align: right;
+      }
+      table input.sched-input,
+      table input.ohp-input {
+        text-align: center;
+      }
+      table .alt-row input:not(.alt-desc) {
+        text-align: left;
+      }
+
+      .col-num {
+        width: 3%;
+        text-align: center;
+      }
+      .col-name {
+        width: 20%;
+        text-align: left;
+      }
+      .col-bid {
+        width: 13.5%;
+        text-align: right;
+      }
+      .col-alt {
+        width: 25%;
+        text-align: left;
+      }
+      .col-total {
+        width: 13.5%;
+        text-align: right;
+      }
+      .col-sched {
+        width: 12.5%;
+        text-align: center;
+      }
+      .col-ohp {
+        width: 12.5%;
+        text-align: center;
+      }
+      .col-actions {
+        width: 44px;
+      }
+
+      .total-display {
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 700;
+        font-size: 13px;
+        color: #0284c7;
+        padding: 6px 10px;
+        background: #e0f2fe;
+        border-radius: var(--radius-xs);
+        text-align: right;
+        border: 1px solid rgba(2, 132, 199, 0.3);
+      }
+      .total-display.lowest {
+        color: var(--green);
+        background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+        border-color: rgba(5, 150, 105, 0.35);
+        box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.15);
+        font-weight: 800;
+      }
+      .total-display.highest {
+        color: var(--red);
+        background: linear-gradient(135deg, #fef2f2, #fee2e2);
+        border-color: rgba(220, 38, 38, 0.35);
+        box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.12);
+        font-weight: 800;
+      }
+      .sched-display.shortest,
+      .sched-input.shortest {
+        color: var(--blue);
+        font-weight: 700;
+      }
+
+      /* ── ALTERNATES ── */
+      .alt-toggle {
+        font-size: 11.5px;
+        font-weight: 600;
+        cursor: pointer;
+        color: var(--accent);
+        background: var(--accent-light);
+        border: 1.5px solid transparent;
+        padding: 5px 11px;
+        border-radius: var(--radius-xs);
+      }
+      .alt-toggle:hover {
+        border-color: var(--accent);
+      }
+      .alt-toggle.active {
+        background: var(--accent);
+        color: #fff;
+      }
+      .alt-container {
+        margin-top: 8px;
+      }
+      .no-alt-label {
+        display: none;
+      }
+      .alt-row {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 6px;
+        align-items: center;
+      }
+      .alt-row input {
+        min-width: 60px;
+      }
+      .alt-row input.alt-desc {
+        min-width: 120px;
+        flex: 1;
+      }
+      .alt-remove {
+        width: 22px;
+        height: 22px;
+        border-radius: var(--radius-xs);
+        border: none;
+        background: var(--red-bg);
+        color: var(--red);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+      }
+      .alt-remove:hover {
+        background: var(--red);
+        color: #fff;
+      }
+      .custom-cancel-btn {
+        width: 26px;
+        height: 26px;
+        border-radius: var(--radius-xs);
+        border: 1.5px solid var(--border);
+        background: var(--surface);
+        color: var(--ink-soft);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: 600;
+        flex-shrink: 0;
+        transition: all 0.15s ease;
+      }
+      .custom-cancel-btn:hover {
+        background: var(--ink);
+        color: #fff;
+        border-color: var(--ink);
+      }
+      .alt-add {
+        font-size: 11px;
+        color: var(--accent);
+        cursor: pointer;
+        background: none;
+        border: 1.5px dashed var(--border);
+        padding: 4px 8px;
+        border-radius: var(--radius-xs);
+        width: 100%;
+        margin-top: 4px;
+        font-weight: 600;
+      }
+      .alt-add:hover {
+        border-color: var(--accent);
+        background: var(--accent-light);
+      }
+
+      /* ── RANKING ── */
+      .ranking-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .rank-card {
+        display: flex;
+        align-items: stretch;
+        border-radius: var(--radius);
+        border: 1.5px solid var(--border);
+        background: var(--card);
+        overflow: hidden;
+        position: relative;
+      }
+      .rank-card::before {
+        content: attr(data-rank);
+        position: absolute;
+        right: 14px;
+        bottom: -10px;
+        font-size: 90px;
+        font-weight: 800;
+        color: rgba(15, 23, 42, 0.035);
+        line-height: 1;
+        pointer-events: none;
+        user-select: none;
+        z-index: 0;
+      }
+      .rank-card:hover {
+        box-shadow: var(--shadow-md);
+      }
+      .rank-card.rank-1 {
+        border-color: rgba(217, 119, 6, 0.35);
+        background: linear-gradient(135deg, #fffbeb 0%, #ffffff 65%);
+      }
+      .rank-card.rank-1::before {
+        color: rgba(217, 119, 6, 0.07);
+      }
+      .rank-card.rank-2 {
+        border-color: rgba(71, 85, 105, 0.28);
+        background: linear-gradient(135deg, #f8fafc 0%, #ffffff 65%);
+      }
+      .rank-card.rank-3 {
+        border-color: rgba(124, 45, 18, 0.25);
+        background: linear-gradient(135deg, #fff7ed 0%, #ffffff 65%);
+      }
+      .rank-left {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 22px;
+        flex-shrink: 0;
+        min-width: 80px;
+        background: var(--surface);
+        position: relative;
+        z-index: 1;
+      }
+      .rank-1 .rank-left {
+        background: linear-gradient(
+          180deg,
+          rgba(245, 158, 11, 0.13) 0%,
+          rgba(217, 119, 6, 0.07) 100%
+        );
+      }
+      .rank-2 .rank-left {
+        background: linear-gradient(
+          180deg,
+          rgba(255, 173, 90, 0.1) 0%,
+          rgba(71, 85, 105, 0.06) 100%
+        );
+      }
+      .rank-3 .rank-left {
+        background: linear-gradient(
+          180deg,
+          rgba(154, 52, 18, 0.1) 0%,
+          rgba(124, 45, 18, 0.06) 100%
+        );
+      }
+      .rank-badge {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 17px;
+        flex-shrink: 0;
+      }
+      .rank-1 .rank-badge {
+        background: linear-gradient(
+          135deg,
+          #fde68a 0%,
+          #f59e0b 50%,
+          #d97706 100%
+        );
+        color: #78350f;
+        box-shadow: 0 4px 18px rgba(245, 158, 11, 0.55);
+        font-size: 19px;
+      }
+      .rank-2 .rank-badge {
+        background: linear-gradient(
+          135deg,
+          #e2e8f0 0%,
+          #94a3b8 50%,
+          #475569 100%
+        );
+        color: #ffffff;
+        box-shadow: 0 4px 14px rgba(71, 85, 105, 0.4);
+      }
+      .rank-3 .rank-badge {
+        background: linear-gradient(
+          135deg,
+          #fdba74 0%,
+          #c2410c 50%,
+          #7c2d12 100%
+        );
+        color: #fff;
+        box-shadow: 0 4px 14px rgba(194, 65, 12, 0.45);
+      }
+      .rank-card:not(.rank-1):not(.rank-2):not(.rank-3) .rank-badge {
+        background: linear-gradient(135deg, #cbd5e8 0%, #94a3b8 100%);
+        color: var(--ink-soft);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      .rank-body {
+        flex: 1;
+        padding: 16px 20px;
+        border-left: 1px solid var(--border-soft);
+        min-width: 0;
+        position: relative;
+        z-index: 1;
+      }
+      .rank-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+      }
+      .rank-name {
+        font-family: "Syne", sans-serif;
+        font-weight: 700;
+        font-size: 15px;
+        flex: 1;
+        min-width: 0;
+        color: var(--ink);
+      }
+      .rank-tags {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .rank-tag {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        padding: 2px 9px;
+        border-radius: 20px;
+      }
+      .rank-tag.best-price {
+        background: linear-gradient(135deg, #059669, #047857);
+        color: #ffffff;
+        box-shadow: 0 2px 8px rgba(5, 150, 105, 0.35);
+      }
+      .rank-tag.best-schedule {
+        background: linear-gradient(135deg, #4f46e5, #3730a3);
+        color: #ffffff;
+        box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35);
+      }
+
+      .rank-breakdown {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+      }
+      .rank-breakdown td {
+        padding: 3px 0;
+        vertical-align: top;
+      }
+      .rank-breakdown td:last-child {
+        text-align: right;
+        font-family: "JetBrains Mono", monospace;
+        white-space: nowrap;
+        padding-left: 16px;
+      }
+      .rank-breakdown .row-base td {
+        color: var(--ink-soft);
+      }
+      .rank-breakdown .row-alt td {
+        color: var(--ink-muted);
+        padding-left: 14px;
+      }
+      .rank-breakdown .row-alt td:last-child {
+        padding-left: 16px;
+      }
+      .rank-breakdown .row-total td {
+        font-weight: 700;
+        color: var(--ink);
+        border-top: 1px solid var(--border);
+        padding-top: 6px;
+      }
+      .rank-breakdown .row-excluded td {
+        color: var(--ink-muted);
+        font-style: italic;
+        font-size: 11px;
+        padding-top: 3px;
+      }
+      .rank-total-simple {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--ink);
+        margin-bottom: 10px;
+      }
+      .rank-footer {
+        font-size: 11px;
+        color: var(--ink-muted);
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        padding-top: 8px;
+        border-top: 1px solid var(--surface-alt);
+      }
+      .rank-footer span {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .ranking-mode {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .ranking-mode select {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+
+      /* ── RECOMMENDATION ── */
+      .rec-grid {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 16px;
+        align-items: start;
+      }
+      .justification-required {
+        background: var(--orange-bg);
+        color: var(--orange);
+        font-size: 12px;
+        font-weight: 600;
+        padding: 8px 12px;
+        border-radius: var(--radius-sm);
+        border-left: 3px solid var(--orange);
+        margin-top: 8px;
+        display: none;
+      }
+      .justification-required.visible {
+        display: block;
+      }
+
+      /* ── SIGNATURES ── */
+      .sig-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+      }
+      .sig-block h3 {
+        font-family: "Syne", sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--ink-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-bottom: 16px;
+      }
+      .sig-line {
+        border-bottom: 2px solid var(--ink);
+        margin-bottom: 6px;
+        padding-bottom: 40px;
+      }
+      .sig-label {
+        font-size: 11px;
+        color: var(--ink-muted);
+        letter-spacing: 0.3px;
+      }
+
+      /* ── VALIDATION BANNER ── */
+      .validation-banner {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        background: var(--red);
+        color: #fff;
+        padding: 12px 24px;
+        border-radius: var(--radius);
+        font-size: 13px;
+        font-weight: 600;
+        box-shadow: var(--shadow-lg);
+        z-index: 200;
+        max-width: 500px;
+        text-align: center;
+      }
+      .validation-banner.show {
+        transform: translateX(-50%) translateY(0);
+      }
+
+      /* ── EMPTY STATE ── */
+      .empty-state {
+        text-align: center;
+        padding: 32px;
+        color: var(--ink-muted);
+      }
+      .empty-state p {
+        font-size: 14px;
+      }
+
+      /* ── PDF ONLY ── */
+      .pdf-only {
+        display: none;
+      }
+
+      /* ── RESPONSIVE ── */
+      @media (max-width: 768px) {
+        .app-header {
+          padding: 16px 20px;
+          flex-direction: column;
+          gap: 12px;
+        }
+        .container {
+          padding: 16px 12px 40px;
+        }
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+        .form-row {
+          flex-direction: column;
+        }
+        .form-row .w-50,
+        .form-row .w-30,
+        .form-row .w-20 {
+          flex: 1 1 100%;
+        }
+        .rec-grid {
+          grid-template-columns: 1fr;
+        }
+        .sig-grid {
+          grid-template-columns: 1fr;
+          gap: 24px;
+        }
+        .section-body {
+          padding: 16px;
+        }
+        .rank-card {
+          break-inside: avoid;
+        }
+      }
+
+      /* ════════════════════════════════════════
+         PRINT
+         ════════════════════════════════════════ */
+      @page {
+        size: portrait;
+        margin: 12mm 3px;
+      }
+
+      @media print {
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+
+        /* kill screen-only elements */
+        .section {
+          animation: none !important;
+          transform: none !important;
+        }
+        .rank-card {
+          animation: none !important;
+          transform: none !important;
+        }
+        .rank-card:hover {
+          transform: none !important;
+        }
+        .section:hover {
+          transform: none !important;
+          box-shadow: none !important;
+        }
+        body {
+          background: #fff !important;
+        }
+
+        .app-header {
+          position: relative;
+          background: #ffffff !important;
+          border-bottom: 1px solid var(--border) !important;
+          box-shadow: none !important;
+          padding: 18px 28px;
+        }
+        .app-header h1 {
+          font-family: "Syne", sans-serif;
+          font-size: 18px;
+          color: #000000 !important;
+        }
+        .app-header .subtitle {
+          font-family: "DM Sans", sans-serif;
+          color: #000000 !important;
+        }
+        .header-logo {
+          height: 36px;
+        }
+
+        .header-actions,
+        .btn,
+        .btn-icon,
+        .alt-toggle,
+        .alt-add,
+        .alt-remove,
+        .custom-cancel-btn,
+        .ranking-mode,
+        .empty-state,
+        #validationBanner {
+          display: none !important;
+        }
+
+        /* Hide date picker calendar icon */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+          display: none !important;
+        }
+
+        .container {
+          padding: 16px 0;
+          max-width: 100%;
+        }
+
+        .section {
+          break-inside: avoid;
+          box-shadow: none !important;
+          border: 1px solid #ccc;
+          margin-bottom: 8px;
+          transform: none !important;
+        }
+        .section::before {
+          display: none;
+        }
+        .section-body {
+          padding: 12px 16px;
+        }
+        .section-header {
+          padding: 10px 16px;
+          background: #1e293b !important;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+        .section-header h2 {
+          color: #f1f5f9 !important;
+        }
+
+        table input,
+        table select {
+          border: none !important;
+          padding: 2px 0 !important;
+          background: transparent !important;
+          box-shadow: none !important;
+          font-size: 11px !important;
+        }
+        input,
+        select,
+        textarea {
+          border: none !important;
+          padding: 4px 0 !important;
+          background: transparent !important;
+          box-shadow: none !important;
+        }
+        .total-display {
+          background: transparent !important;
+          padding: 2px 0 !important;
+          border: none !important;
+        }
+        .total-display.lowest {
+          background: var(--green-bg) !important;
+          padding: 2px 0 2px 6px !important;
+          border-radius: 3px;
+        }
+        .sig-line {
+          padding-bottom: 30px;
+        }
+
+        select {
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+        }
+
+        /* Section chrome */
+        .section {
+          margin-bottom: 8px;
+        }
+        .section-body {
+          padding: 12px 16px;
+        }
+        .section-header {
+          padding: 10px 16px;
+        }
+
+        /* General Info */
+        .form-grid {
+          gap: 6px;
+        }
+        .form-group label {
+          font-size: 10px;
+          margin-bottom: 0;
+        }
+
+        /* Bid Submissions table */
+        thead th {
+          position: static;
+          font-size: 10px;
+          padding: 6px 8px;
+        }
+        tbody td {
+          font-size: 11px;
+          padding: 5px 8px;
+        }
+        thead th:first-child,
+        tbody td:first-child {
+          padding-left: 8px;
+        }
+        thead th:last-child,
+        tbody td:last-child {
+          padding-right: 8px;
+        }
+
+        /* Rankings: 2-column grid */
+        .ranking-grid {
+          display: grid !important;
+          grid-template-columns: 1fr 1fr;
+          gap: 8px;
+        }
+        .rank-card::before {
+          display: none;
+        }
+
+        .rank-left {
+          padding: 12px 14px;
+          min-width: 52px;
+        }
+        .rank-body {
+          padding: 10px 14px;
+        }
+        .rank-badge {
+          width: 32px;
+          height: 32px;
+          font-size: 13px;
+        }
+        .rank-name {
+          font-size: 13px;
+        }
+        .rank-breakdown {
+          font-size: 11px;
+        }
+        .rank-breakdown td {
+          padding: 2px 0;
+        }
+        .rank-total-simple {
+          font-size: 13px;
+        }
+        .rank-footer {
+          font-size: 10px;
+          padding-top: 6px;
+          gap: 10px;
+        }
+
+        /* Recommendation */
+        .rec-grid {
+          gap: 8px;
+        }
+        textarea {
+          font-size: 11px !important;
+        }
+
+        /* Alt display in print */
+        .no-alt-label {
+          display: inline;
+          font-size: 11px;
+          color: #666;
+          font-style: italic;
+        }
+        .alt-container {
+          margin-top: 4px;
+        }
+        .alt-row {
+          margin-bottom: 2px;
+        }
+        .alt-row input {
+          font-size: 11px !important;
+        }
+        .alt-remove {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- HEADER -->
+    <header class="app-header">
+      <div class="header-content">
+        <img src="base_logo.png" alt="UPS Logo" class="header-logo" />
+        <div>
+          <h1>Bid Recap Application</h1>
+          <div class="subtitle">Submitted to Project Director</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-danger" onclick="resetForm()">⟳ Reset</button>
+        <button class="btn btn-primary" onclick="exportPDF()">
+          ⎙ Print / Save PDF
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <div class="container" id="pdf-content">
+      <!-- 1. GENERAL INFO -->
+      <div class="section">
+        <div class="section-header" data-num="1">
+          <h2><span class="section-num">1</span> General Information</h2>
+        </div>
+        <div class="section-body">
+          <div class="form-grid">
+            <!-- Row 1: Facility Location 50%, Region 20%, District 30% -->
+            <div class="form-row full-width">
+              <div class="form-group w-50">
+                <label>Facility Location <span class="req">*</span></label>
+                <input
+                  type="text"
+                  id="facilityLocation"
+                  placeholder="e.g. Atlanta Hub"
+                  required
+                />
+                <span class="error-msg" id="err-facilityLocation"
+                  >Required</span
+                >
+              </div>
+              <div class="form-group w-20">
+                <label>Region <span class="req">*</span></label>
+                <input
+                  type="text"
+                  id="region"
+                  placeholder="e.g. Southeast"
+                  required
+                />
+                <span class="error-msg" id="err-region">Required</span>
+              </div>
+              <div class="form-group w-30">
+                <label>District <span class="req">*</span></label>
+                <input
+                  type="text"
+                  id="district"
+                  placeholder="e.g. District 5"
+                  required
+                />
+                <span class="error-msg" id="err-district">Required</span>
+              </div>
+            </div>
+
+            <!-- Row 2: RFA Number 50%, Approval Date 50% -->
+            <div class="form-row full-width">
+              <div class="form-group w-50">
+                <label>RFA Number <span class="req">*</span></label>
+                <input
+                  type="text"
+                  id="rfaNumber"
+                  placeholder="e.g. RFA-2026-0042"
+                  required
+                />
+                <span class="error-msg" id="err-rfaNumber">Required</span>
+              </div>
+              <div class="form-group w-50">
+                <label>Approval Date <span class="req">*</span></label>
+                <input type="date" id="approvalDate" required />
+                <span class="error-msg" id="err-approvalDate">Required</span>
+              </div>
+            </div>
+
+            <!-- Row 3: Description of Work 50%, Alternates Description 50% -->
+            <div class="form-row full-width">
+              <div class="form-group w-50">
+                <label>Description of Work <span class="req">*</span></label>
+                <input
+                  type="text"
+                  id="descWork"
+                  placeholder="e.g. Roof replacement — Building 3"
+                  required
+                />
+                <span class="error-msg" id="err-descWork">Required</span>
+              </div>
+              <div class="form-group w-50">
+                <label
+                  >Alternates Description
+                  <span
+                    style="
+                      color: var(--ink-muted);
+                      font-weight: 400;
+                      text-transform: none;
+                    "
+                    >(optional)</span
+                  >
+                </label>
+                <textarea
+                  id="altDesc"
+                  placeholder="Describe any alternates scope if applicable..."
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. BID TABLE -->
+      <div class="section">
+        <div class="section-header" data-num="2">
+          <h2><span class="section-num">2</span> Bid Submissions</h2>
+          <button class="btn btn-accent btn-sm" onclick="addBidder()">
+            + Add Bidder
+          </button>
+        </div>
+        <div class="section-body">
+          <div class="table-wrap">
+            <table id="bidTable">
+              <thead>
+                <tr>
+                  <th class="col-num">#</th>
+                  <th class="col-name">Bidder Name</th>
+                  <th class="col-bid">Base Bid ($)</th>
+                  <th class="col-alt">Alternates</th>
+                  <th class="col-total">Total</th>
+                  <th class="col-sched">Schedule (days)</th>
+                  <th class="col-ohp">OHP (%)</th>
+                  <th class="col-actions"></th>
+                </tr>
+              </thead>
+              <tbody id="bidTableBody"></tbody>
+            </table>
+          </div>
+          <div class="empty-state" id="emptyState">
+            <p>
+              No bidders added yet. Click <strong>+ Add Bidder</strong> to
+              start.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. RANKINGS -->
+      <div class="section">
+        <div class="section-header" data-num="3">
+          <h2><span class="section-num">3</span> Bid Rankings</h2>
+          <div class="ranking-mode">
+            <label style="font-size: 12px; font-weight: 600; color: #ffffff"
+              >Mode:</label
+            >
+            <select id="rankingMode" onchange="recalculate()">
+              <option value="auto">Automatic</option>
+              <option value="manual">Manual Override</option>
+            </select>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="ranking-grid" id="rankingGrid">
+            <div class="empty-state">
+              <p>Rankings will appear once bidders are added.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. RECOMMENDATION -->
+      <div class="section">
+        <div class="section-header" data-num="4">
+          <h2><span class="section-num">4</span> Recommendation</h2>
+        </div>
+        <div class="section-body">
+          <div class="rec-grid">
+            <div class="form-group">
+              <label>Recommended Bidder <span class="req">*</span></label>
+              <select id="recBidder" onchange="checkJustification()">
+                <option value="">— Select —</option>
+              </select>
+              <div class="justification-required" id="justNote">
+                ⚠ Not the lowest bidder — justification required.
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Justification</label>
+              <textarea
+                id="justification"
+                placeholder="Explain why this bidder is recommended..."
+              ></textarea>
+              <span class="error-msg" id="err-justification"
+                >Justification is required when not selecting the lowest
+                bidder</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. SIGNATURES -->
+      <div class="section">
+        <div class="section-header" data-num="5">
+          <h2><span class="section-num">5</span> Signatures</h2>
+          <button class="btn btn-outline btn-sm" onclick="autoFillDates()">
+            Auto-fill Dates
+          </button>
+        </div>
+        <div class="section-body">
+          <div class="sig-grid">
+            <div class="sig-block">
+              <h3>Project Engineer</h3>
+              <div class="sig-line"></div>
+              <div class="sig-label">Signature</div>
+              <div style="margin-top: 16px">
+                <div class="form-group">
+                  <label>Printed Name</label>
+                  <input type="text" id="engName" placeholder="Full name" />
+                </div>
+                <div class="form-group" style="margin-top: 10px">
+                  <label>Date</label>
+                  <input type="date" id="engDate" />
+                </div>
+              </div>
+            </div>
+            <div class="sig-block">
+              <h3>Project Director</h3>
+              <div class="sig-line"></div>
+              <div class="sig-label">Signature</div>
+              <div style="margin-top: 16px">
+                <div class="form-group">
+                  <label>Printed Name</label>
+                  <input type="text" id="dirName" placeholder="Full name" />
+                </div>
+                <div class="form-group" style="margin-top: 10px">
+                  <label>Date</label>
+                  <input type="date" id="dirDate" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VALIDATION BANNER -->
+    <div class="validation-banner" id="validationBanner"></div>
+
+    <script>
+      // ═══════════════════════════════════════════
+      // STATE
+      // ═══════════════════════════════════════════
+      let bidders = [];
+      let nextId = 1;
+
+      const PRESET_CONTRACTORS = [
+        "Select Demo",
+        "FabCon LLC",
+        "Rivero Maintenance",
+        "IMGCO",
+      ];
+
+      // ═══════════════════════════════════════════
+      // BIDDER MANAGEMENT
+      // ═══════════════════════════════════════════
+      function createBidder() {
+        return {
+          id: nextId++,
+          name: "",
+          customName: "",
+          baseBid: "",
+          alternates: [],
+          showAlternates: false,
+          schedule: "",
+          ohp: "",
+          manualRank: "",
+        };
+      }
+
+      function addBidder() {
+        bidders.push(createBidder());
+        renderTable();
+        recalculate();
+      }
+
+      function removeBidder(id) {
+        bidders = bidders.filter((b) => b.id !== id);
+        renderTable();
+        recalculate();
+      }
+
+      function addAlternate(bidderId) {
+        const b = bidders.find((x) => x.id === bidderId);
+        if (b) {
+          b.alternates.push({ amount: "", description: "" });
+          renderTable();
+        }
+      }
+
+      function removeAlternate(bidderId, altIdx) {
+        const b = bidders.find((x) => x.id === bidderId);
+        if (b) {
+          b.alternates.splice(altIdx, 1);
+          renderTable();
+          recalculate();
+        }
+      }
+
+      function toggleAlternates(bidderId) {
+        const b = bidders.find((x) => x.id === bidderId);
+        if (b) {
+          b.showAlternates = !b.showAlternates;
+          if (b.showAlternates && b.alternates.length === 0) {
+            b.alternates.push({ amount: "", description: "" });
+          }
+          renderTable();
+          recalculate();
+        }
+      }
+
+      // ═══════════════════════════════════════════
+      // SYNC STATE FROM DOM
+      // ═══════════════════════════════════════════
+      function syncBidderState() {
+        bidders.forEach((b) => {
+          const row = document.querySelector(`[data-bidder-id="${b.id}"]`);
+          if (!row) return;
+          const nameSelect = row.querySelector(".bidder-name-select");
+          const customInput = row.querySelector(".bidder-custom-name");
+          b.name = nameSelect ? nameSelect.value : b.name;
+          if (customInput) b.customName = customInput.value;
+          const baseBidInput = row.querySelector(".base-bid-input");
+          if (baseBidInput) b.baseBid = parseCurrency(baseBidInput.value);
+          const schedInput = row.querySelector(".sched-input");
+          if (schedInput) b.schedule = schedInput.value;
+          const ohpInput = row.querySelector(".ohp-input");
+          if (ohpInput) b.ohp = ohpInput.value;
+          b.alternates.forEach((alt, i) => {
+            const amtInput = row.querySelector(`.alt-amount-${i}`);
+            const descInput = row.querySelector(`.alt-desc-${i}`);
+            if (amtInput) alt.amount = amtInput.value;
+            if (descInput) alt.description = descInput.value;
+          });
+        });
+      }
+
+      // ═══════════════════════════════════════════
+      // CALCULATIONS
+      // ═══════════════════════════════════════════
+      function getTotal(b) {
+        const base = parseFloat(b.baseBid) || 0;
+        const altSum = b.alternates.reduce(
+          (s, a) => s + (parseFloat(a.amount) || 0),
+          0,
+        );
+        return base + altSum;
+      }
+
+      function formatCurrency(val) {
+        if (val === 0 || isNaN(val)) return "$0.00";
+        return "$" + val.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      }
+
+      function parseCurrency(str) {
+        if (typeof str !== "string") return parseFloat(str) || 0;
+        return parseFloat(str.replace(/[$,]/g, "")) || 0;
+      }
+
+      function recalculate() {
+        syncBidderState();
+        updateTotals();
+        updateRankings();
+        updateRecDropdown();
+        saveState();
+      }
+
+      function updateTotals() {
+        const totals = bidders.map((b) => getTotal(b));
+        const validTotals = totals.filter((t) => t > 0);
+        const minTotal = validTotals.length > 0 ? Math.min(...validTotals) : 0;
+        const maxTotal = validTotals.length > 1 ? Math.max(...validTotals) : 0;
+        const schedules = bidders.map((b) => parseFloat(b.schedule) || 0);
+        const validScheds = schedules.filter((s) => s > 0);
+        const minSched = validScheds.length > 0 ? Math.min(...validScheds) : 0;
+
+        bidders.forEach((b, i) => {
+          const t = totals[i];
+          const row = document.querySelector(`[data-bidder-id="${b.id}"]`);
+          const totalEl = document.querySelector(
+            `[data-bidder-id="${b.id}"] .total-display`,
+          );
+          const schedEl = document.querySelector(
+            `[data-bidder-id="${b.id}"] .sched-input`,
+          );
+          if (totalEl) {
+            totalEl.textContent = formatCurrency(t);
+            totalEl.classList.toggle("lowest", t > 0 && t === minTotal);
+            totalEl.classList.toggle(
+              "highest",
+              t > 0 && t === maxTotal && maxTotal !== minTotal,
+            );
+          }
+          if (row) {
+            row.classList.toggle("highlight-lowest", t > 0 && t === minTotal);
+            row.classList.toggle(
+              "highlight-highest",
+              t > 0 && t === maxTotal && maxTotal !== minTotal,
+            );
+          }
+          if (schedEl) {
+            schedEl.classList.toggle(
+              "shortest",
+              schedules[i] > 0 && schedules[i] === minSched,
+            );
+          }
+        });
+      }
+
+      function updateRankings() {
+        const grid = document.getElementById("rankingGrid");
+        const validBidders = bidders.filter((b) => {
+          const name = b.name === "__custom__" ? b.customName : b.name;
+          return name && getTotal(b) > 0;
+        });
+
+        if (validBidders.length === 0) {
+          grid.innerHTML =
+            '<div class="empty-state"><p>Rankings will appear once bidders are added.</p></div>';
+          return;
+        }
+
+        const mode = document.getElementById("rankingMode").value;
+        let ranked;
+
+        if (mode === "auto") {
+          ranked = [...validBidders].sort((a, b) => {
+            const diff = getTotal(a) - getTotal(b);
+            if (diff !== 0) return diff;
+            return (
+              (parseFloat(a.schedule) || 999) - (parseFloat(b.schedule) || 999)
+            );
+          });
+        } else {
+          ranked = [...validBidders].sort((a, b) => {
+            const ra = parseInt(a.manualRank) || 999;
+            const rb = parseInt(b.manualRank) || 999;
+            return ra - rb;
+          });
+        }
+
+        const lowestTotal = Math.min(...validBidders.map((b) => getTotal(b)));
+        const shortestSched = Math.min(
+          ...validBidders.map((b) => parseFloat(b.schedule) || Infinity),
+        );
+
+        grid.innerHTML = ranked
+          .map((b, i) => {
+            const name = b.name === "__custom__" ? b.customName : b.name;
+            const total = getTotal(b);
+            const base = parseFloat(b.baseBid) || 0;
+            const sched = parseFloat(b.schedule) || 0;
+            const ohp = parseFloat(b.ohp) || 0;
+            const rank =
+              mode === "manual" && b.manualRank
+                ? parseInt(b.manualRank)
+                : i + 1;
+            const rankClass = rank <= 3 ? ` rank-${rank}` : "";
+            const isBestPrice = total === lowestTotal;
+            const isBestSched = sched > 0 && sched === shortestSched;
+
+            let tags = "";
+            if (isBestPrice)
+              tags += '<span class="rank-tag best-price">Best Price</span>';
+            if (isBestSched)
+              tags +=
+                '<span class="rank-tag best-schedule">Best Schedule</span>';
+
+            let manualSelect = "";
+            if (mode === "manual") {
+              const opts = validBidders
+                .map((_, j) => {
+                  const sel = j + 1 == b.manualRank ? "selected" : "";
+                  return `<option value="${j + 1}" ${sel}>${j + 1}</option>`;
+                })
+                .join("");
+              manualSelect = `<select class="manual-rank-select" data-bid="${b.id}"
+                onchange="setManualRank(${b.id}, this.value)"
+                style="width:50px;padding:4px;font-size:12px;margin-left:8px;">
+                <option value="">—</option>${opts}</select>`;
+            }
+
+            // Build alternates breakdown
+            const validAlts = (b.alternates || [])
+              .map((alt, origIdx) => ({ alt, origIdx }))
+              .filter(
+                ({ alt }) => alt.amount !== "" && parseFloat(alt.amount) !== 0,
+              );
+            let breakdownHtml = "";
+            if (validAlts.length > 0) {
+              const altRows = validAlts
+                .map(({ alt, origIdx }) => {
+                  const amt = parseFloat(alt.amount) || 0;
+                  const desc =
+                    alt.description && alt.description.trim()
+                      ? alt.description
+                      : `Alternate ${origIdx + 1}`;
+                  const sign = amt >= 0 ? "+" : "−";
+                  return `<tr class="row-alt">
+                    <td>${desc}</td>
+                    <td>${sign} ${formatCurrency(Math.abs(amt))}</td>
+                  </tr>`;
+                })
+                .join("");
+              breakdownHtml = `<table class="rank-breakdown">
+                <tr class="row-base"><td>Base Bid</td><td>${formatCurrency(base)}</td></tr>
+                ${altRows}
+                <tr class="row-total"><td>Total Bid</td><td>${formatCurrency(total)}</td></tr>
+              </table>`;
+            } else {
+              breakdownHtml = `<table class="rank-breakdown">
+                <tr class="row-base"><td>Base Bid</td><td>${formatCurrency(base)}</td></tr>
+                <tr class="row-excluded"><td colspan="2">Alternates Excluded</td></tr>
+                <tr class="row-total"><td>Total Bid</td><td>${formatCurrency(total)}</td></tr>
+              </table>`;
+            }
+
+            const footerParts = [];
+            if (sched > 0)
+              footerParts.push(`<span>Schedule: ${sched} days</span>`);
+            if (ohp > 0) footerParts.push(`<span>OHP: ${ohp}%</span>`);
+            const footer =
+              footerParts.length > 0
+                ? `<div class="rank-footer">${footerParts.join("")}</div>`
+                : "";
+
+            return `<div class="rank-card${rankClass}" data-rank="${rank}">
+              <div class="rank-left"><div class="rank-badge">${rank}</div></div>
+              <div class="rank-body">
+                <div class="rank-header">
+                  <div class="rank-name">${name || "Unnamed"}${manualSelect}</div>
+                  <div class="rank-tags">${tags}</div>
+                </div>
+                ${breakdownHtml}
+                ${footer}
+              </div>
+            </div>`;
+          })
+          .join("");
+      }
+
+      function setManualRank(bidderId, val) {
+        const b = bidders.find((x) => x.id === bidderId);
+        if (b) b.manualRank = val;
+        updateRankings();
+        updateRecDropdown();
+      }
+
+      // ═══════════════════════════════════════════
+      // RECOMMENDATION
+      // ═══════════════════════════════════════════
+      function updateRecDropdown() {
+        const sel = document.getElementById("recBidder");
+        const current = sel.value;
+        const validBidders = bidders.filter((b) => {
+          const name = b.name === "__custom__" ? b.customName : b.name;
+          return name && name.trim();
+        });
+        sel.innerHTML =
+          '<option value="">— Select —</option>' +
+          validBidders
+            .map((b) => {
+              const name = b.name === "__custom__" ? b.customName : b.name;
+              return `<option value="${b.id}" ${b.id == current ? "selected" : ""}>${name}</option>`;
+            })
+            .join("");
+        checkJustification();
+      }
+
+      function checkJustification() {
+        const sel = document.getElementById("recBidder");
+        const note = document.getElementById("justNote");
+        const errEl = document.getElementById("err-justification");
+        const selectedId = parseInt(sel.value);
+
+        if (!selectedId || bidders.length === 0) {
+          note.classList.remove("visible");
+          errEl.classList.remove("visible");
+          return;
+        }
+
+        const validBidders = bidders.filter((b) => getTotal(b) > 0);
+        if (validBidders.length === 0) {
+          note.classList.remove("visible");
+          return;
+        }
+
+        const lowestTotal = Math.min(...validBidders.map((b) => getTotal(b)));
+        const selectedBidder = bidders.find((b) => b.id === selectedId);
+        const isLowest =
+          selectedBidder && getTotal(selectedBidder) === lowestTotal;
+
+        note.classList.toggle("visible", !isLowest);
+        if (isLowest) errEl.classList.remove("visible");
+      }
+
+      // ═══════════════════════════════════════════
+      // RENDER TABLE
+      // ═══════════════════════════════════════════
+      function renderTable() {
+        syncBidderState();
+        const tbody = document.getElementById("bidTableBody");
+        const empty = document.getElementById("emptyState");
+        empty.style.display = bidders.length === 0 ? "block" : "none";
+
+        tbody.innerHTML = bidders
+          .map((b, idx) => {
+            const nameOptions = PRESET_CONTRACTORS.map(
+              (c) =>
+                `<option value="${c}" ${b.name === c ? "selected" : ""}>${c}</option>`,
+            ).join("");
+
+            const isCustom = b.name === "__custom__";
+
+            let altCell = "";
+            if (b.showAlternates) {
+              const altRows = b.alternates
+                .map(
+                  (a, ai) => `
+        <div class="alt-row">
+          <input type="number" class="alt-amount-${ai}" value="${a.amount}"
+            placeholder="$" onchange="recalculate()" oninput="recalculate()" style="width:90px">
+          <input type="text" class="alt-desc-${ai} alt-desc" value="${a.description}"
+            placeholder="Description">
+          <button class="alt-remove" onclick="removeAlternate(${b.id}, ${ai})" title="Remove">×</button>
+        </div>
+      `,
+                )
+                .join("");
+              altCell = `
+        <button class="alt-toggle active" onclick="toggleAlternates(${b.id})">With Alternates</button>
+        <div class="alt-container">
+          ${altRows}
+          <button class="alt-add" onclick="addAlternate(${b.id})">+ Add Alternate</button>
+        </div>
+      `;
+            } else {
+              altCell = `<button class="alt-toggle" onclick="toggleAlternates(${b.id})">Without Alternates</button><span class="no-alt-label">Without Alternates</span>`;
+            }
+
+            return `<tr data-bidder-id="${b.id}">
+      <td class="col-num" style="font-weight:700;color:var(--ink-muted)">${idx + 1}</td>
+      <td class="col-name">
+        <div class="name-dropdown-wrapper" style="${isCustom ? "display:none" : ""}">
+          <select class="bidder-name-select" onchange="handleNameChange(${b.id}, this)">
+            <option value="">— Select —</option>
+            ${nameOptions}
+            <option value="__custom__" ${isCustom ? "selected" : ""}>+ Custom</option>
+          </select>
+        </div>
+        <div class="name-custom-wrapper" style="${isCustom ? "display:flex;gap:6px;align-items:center;" : "display:none"}">
+          <input type="text" class="bidder-custom-name" value="${b.customName || ""}"
+            placeholder="Enter contractor name" onchange="recalculate()" oninput="recalculate()" style="flex:1">
+          <button class="custom-cancel-btn" onclick="cancelCustom(${b.id})" title="Back to list">×</button>
+        </div>
+      </td>
+      <td class="col-bid">
+        <input type="text" class="base-bid-input"
+          value="${b.baseBid !== "" && b.baseBid !== null && b.baseBid !== 0 ? formatCurrency(parseFloat(b.baseBid) || 0) : ""}"
+          placeholder="$0.00"
+          onchange="recalculate()"
+          onfocus="this.value = this.value.replace(/[$,]/g, '') || ''; this.select();"
+          onblur="const v = parseCurrency(this.value); this.value = v ? formatCurrency(v) : '';">
+        <span class="error-msg" id="err-bid-${b.id}">Must be &ge; 0</span>
+      </td>
+      <td class="col-alt">${altCell}</td>
+      <td class="col-total"><div class="total-display">${formatCurrency(getTotal(b))}</div></td>
+      <td class="col-sched">
+        <input type="number" class="sched-input" value="${b.schedule}"
+          placeholder="Days" min="0" onchange="recalculate()" oninput="recalculate()">
+        <span class="error-msg" id="err-sched-${b.id}">Must be &ge; 0</span>
+      </td>
+      <td class="col-ohp">
+        <input type="number" class="ohp-input" value="${b.ohp}"
+          placeholder="%" min="0" max="100" step="0.1" onchange="recalculate()" oninput="recalculate()">
+      </td>
+      <td class="col-actions">
+        <button class="btn-icon" onclick="removeBidder(${b.id})" title="Remove bidder">×</button>
+      </td>
+    </tr>`;
+          })
+          .join("");
+      }
+
+      function handleNameChange(bidderId, selectEl) {
+        const b = bidders.find((x) => x.id === bidderId);
+        if (b) {
+          b.name = selectEl.value;
+          b.customName = "";
+          renderTable();
+          recalculate();
+        }
+      }
+
+      function cancelCustom(bidderId) {
+        const b = bidders.find((x) => x.id === bidderId);
+        if (b) {
+          b.name = "";
+          b.customName = "";
+          renderTable();
+          recalculate();
+        }
+      }
+
+      // ═══════════════════════════════════════════
+      // SIGNATURES
+      // ═══════════════════════════════════════════
+      function autoFillDates() {
+        const today = new Date().toISOString().split("T")[0];
+        document.getElementById("engDate").value = today;
+        document.getElementById("dirDate").value = today;
+      }
+
+      // ═══════════════════════════════════════════
+      // VALIDATION
+      // ═══════════════════════════════════════════
+      function validate() {
+        let valid = true;
+        const required = [
+          "facilityLocation",
+          "region",
+          "district",
+          "rfaNumber",
+          "approvalDate",
+          "descWork",
+        ];
+        required.forEach((id) => {
+          const el = document.getElementById(id);
+          const err = document.getElementById("err-" + id);
+          if (!el.value.trim()) {
+            el.classList.add("error");
+            if (err) err.classList.add("visible");
+            valid = false;
+          } else {
+            el.classList.remove("error");
+            if (err) err.classList.remove("visible");
+          }
+        });
+
+        const recBidder = document.getElementById("recBidder").value;
+        if (recBidder) {
+          const validBidders = bidders.filter((b) => getTotal(b) > 0);
+          if (validBidders.length > 0) {
+            const lowestTotal = Math.min(
+              ...validBidders.map((b) => getTotal(b)),
+            );
+            const selected = bidders.find((b) => b.id == recBidder);
+            if (selected && getTotal(selected) !== lowestTotal) {
+              const just = document
+                .getElementById("justification")
+                .value.trim();
+              if (!just) {
+                document
+                  .getElementById("err-justification")
+                  .classList.add("visible");
+                document.getElementById("justification").classList.add("error");
+                valid = false;
+              } else {
+                document
+                  .getElementById("err-justification")
+                  .classList.remove("visible");
+                document
+                  .getElementById("justification")
+                  .classList.remove("error");
+              }
+            }
+          }
+        }
+
+        bidders.forEach((b) => {
+          const ohp = parseFloat(b.ohp);
+          if (b.ohp !== "" && (ohp < 0 || ohp > 100)) {
+            valid = false;
+          }
+        });
+
+        bidders.forEach((b) => {
+          const bidErrEl = document.getElementById(`err-bid-${b.id}`);
+          const schedErrEl = document.getElementById(`err-sched-${b.id}`);
+          const baseBidInput = document.querySelector(
+            `[data-bidder-id="${b.id}"] .base-bid-input`,
+          );
+          const schedInput = document.querySelector(
+            `[data-bidder-id="${b.id}"] .sched-input`,
+          );
+
+          const bidVal = parseFloat(b.baseBid);
+          const bidNegative = !isNaN(bidVal) && bidVal < 0;
+          if (bidNegative) valid = false;
+          if (bidErrEl) bidErrEl.classList.toggle("visible", bidNegative);
+          if (baseBidInput) baseBidInput.classList.toggle("error", bidNegative);
+
+          const schedVal = parseFloat(b.schedule);
+          const schedNegative =
+            b.schedule !== "" && !isNaN(schedVal) && schedVal < 0;
+          if (schedNegative) valid = false;
+          if (schedErrEl) schedErrEl.classList.toggle("visible", schedNegative);
+          if (schedInput) schedInput.classList.toggle("error", schedNegative);
+        });
+
+        return valid;
+      }
+
+      function showBanner(msg) {
+        const banner = document.getElementById("validationBanner");
+        banner.textContent = msg;
+        banner.classList.add("show");
+        setTimeout(() => banner.classList.remove("show"), 3500);
+      }
+
+      // ═══════════════════════════════════════════
+      // PDF EXPORT
+      // ═══════════════════════════════════════════
+      function exportPDF() {
+        syncBidderState();
+        if (!validate()) {
+          showBanner("Please fix validation errors before exporting.");
+          return;
+        }
+        window.print();
+      }
+
+      // ═══════════════════════════════════════════
+      // RESET
+      // ═══════════════════════════════════════════
+      function resetForm() {
+        if (!confirm("Clear all data and start fresh?")) return;
+        localStorage.removeItem(STORAGE_KEY);
+        bidders = [];
+        nextId = 1;
+        document.querySelectorAll("input, textarea").forEach((el) => {
+          if (el.type === "date") el.value = "";
+          else el.value = "";
+          el.classList.remove("error");
+        });
+        document.querySelectorAll("select").forEach((el) => {
+          el.selectedIndex = 0;
+        });
+        document
+          .querySelectorAll(".error-msg")
+          .forEach((el) => el.classList.remove("visible"));
+        document.getElementById("justNote").classList.remove("visible");
+        renderTable();
+        recalculate();
+      }
+
+      // ═══════════════════════════════════════════
+      // LOCAL STORAGE
+      // ═══════════════════════════════════════════
+      const STORAGE_KEY = "bidRecapData";
+      const STATIC_FIELDS = [
+        "facilityLocation",
+        "region",
+        "district",
+        "rfaNumber",
+        "approvalDate",
+        "descWork",
+        "altDesc",
+        "engName",
+        "engDate",
+        "dirName",
+        "dirDate",
+        "justification",
+        "rankingMode",
+      ];
+
+      function saveState() {
+        syncBidderState();
+        const fields = {};
+        STATIC_FIELDS.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) fields[id] = el.value;
+        });
+        const recEl = document.getElementById("recBidder");
+        if (recEl) fields.recBidder = recEl.value;
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify({ bidders, nextId, fields }),
+        );
+      }
+
+      function loadState() {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          try {
+            const data = JSON.parse(raw);
+            if (data.bidders) bidders = data.bidders;
+            if (data.nextId) nextId = data.nextId;
+            renderTable();
+            recalculate();
+            if (data.fields) {
+              STATIC_FIELDS.forEach((id) => {
+                const el = document.getElementById(id);
+                if (el && data.fields[id] !== undefined)
+                  el.value = data.fields[id];
+              });
+              const recEl = document.getElementById("recBidder");
+              if (recEl && data.fields.recBidder)
+                recEl.value = data.fields.recBidder;
+              checkJustification();
+            }
+            saveState();
+            return;
+          } catch (e) {
+            console.warn("Could not restore saved state:", e);
+          }
+        }
+        renderTable();
+      }
+
+      // ═══════════════════════════════════════════
+      // INIT
+      // ═══════════════════════════════════════════
+      loadState();
+      STATIC_FIELDS.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener("input", saveState);
+          el.addEventListener("change", saveState);
+        }
+      });
+      document
+        .getElementById("recBidder")
+        .addEventListener("change", saveState);
+    </script>
+  </body>
+</html>
